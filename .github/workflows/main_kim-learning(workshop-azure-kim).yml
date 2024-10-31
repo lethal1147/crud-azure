@@ -64,4 +64,4 @@ jobs:
           app-name: 'kim-learning'
           slot-name: 'workshop-azure-kim'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7D3753FF473649DDA8781587C6A6A567 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F6800B0836F04BDF9DEF212A1367C1D8 }}

@@ -5,10 +5,10 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import { db } from "../services/database";
-import { createError } from "../utils/createError";
 import { withErrorHandling } from "../middlewares/handlerError";
+import { createError } from "../utils/createError";
 
-export async function getUserById(
+export async function deleteUser(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
@@ -16,24 +16,17 @@ export async function getUserById(
   const { userId } = request.params;
   if (!userId) createError("Userid is missing!", 400);
   if (isNaN(+userId)) createError("Userid must be number!", 400);
-  const user = await db.user.findUnique({
+  await db.user.delete({
     where: {
       id: +userId,
     },
   });
-
-  return {
-    body: JSON.stringify({
-      error: false,
-      message: "Get one user.",
-      user: user,
-    }),
-  };
+  return { body: `Hello, World!` };
 }
 
-app.http("getUserById", {
-  methods: ["GET"],
+app.http("deleteUser", {
+  methods: ["DELETE"],
   authLevel: "anonymous",
-  route: "getUserById/{userId}",
-  handler: withErrorHandling(getUserById),
+  route: "deleteUser/{userId}",
+  handler: withErrorHandling(deleteUser),
 });

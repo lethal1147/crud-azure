@@ -5,6 +5,7 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import { db } from "../services/database";
+import { withErrorHandling } from "../middlewares/handlerError";
 
 export async function createUser(
   request: HttpRequest,
@@ -31,5 +32,5 @@ export async function createUser(
 app.http("createUser", {
   methods: ["POST"],
   authLevel: "anonymous",
-  handler: createUser,
+  handler: withErrorHandling(createUser),
 });

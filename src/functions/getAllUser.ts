@@ -5,13 +5,36 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import { db } from "../services/database";
+import { withErrorHandling } from "../middlewares/handlerError";
 
 export async function getAllUser(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
-  context.log(`Http function processed request for url "${request.url}"`);
-  const users = await db.user.findMany();
+  const search = request.query.get("search");
+  const whereQuery = {};
+  if (search) {
+    whereQuery["OR"] = [
+      {
+        firstname: {
+          contains: search,
+        },
+      },
+      {
+        lastname: {
+          contains: search,
+        },
+      },
+      {
+        email: {
+          contains: search,
+        },
+      },
+    ];
+  }
+  const users = await db.user.findMany({
+    where: whereQuery,
+  });
   return {
     body: JSON.stringify({
       users,
@@ -22,5 +45,5 @@ export async function getAllUser(
 app.http("getAllUser", {
   methods: ["GET"],
   authLevel: "anonymous",
-  handler: getAllUser,
+  handler: withErrorHandling(getAllUser),
 });
